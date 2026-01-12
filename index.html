@@ -243,6 +243,10 @@
         <div class="tabs">
     <div class="tab active" onclick="switchTab('setoran')"><i class="fas fa-book-quran"></i>Setor</div>
     <div class="tab" onclick="switchTab('murottal')"><i class="fas fa-headphones"></i>Murottal</div>
+    <div class="tab" id="tabPrestasi" onclick="switchTab('prestasi')">
+        <i class="fas fa-trophy"></i>Prestasi
+        <span class="tab-badge" id="prestasiBadge" style="display:none;">NEW</span>
+    </div>
     <div class="tab" onclick="switchTab('bimbingan')"><i class="fas fa-microphone"></i>Rekaman</div>
     <div class="tab" onclick="switchTab('riwayat')"><i class="fas fa-history"></i>Riwayat</div>
     <div class="tab" onclick="switchTab('statistik')"><i class="fas fa-chart-bar"></i>Statistik</div>
@@ -316,6 +320,28 @@
         <p>• Dengarkan murottal sambil melihat mushaf</p>
         <p>• Ulangi ayat yang sulit hingga hafal</p>
         <p>• Muroja'ah minimal 1x sehari</p>
+    </div>
+</div>
+<!-- Tab Content: Prestasi -->
+<div class="tab-content" id="prestasiTab">
+    <div class="card">
+        <div class="card-title"><i class="fas fa-trophy" style="color:gold;"></i> Daftar Prestasi Hafalan</div>
+        <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:15px;">
+            Siswa yang telah menyelesaikan hafalan 1 surat penuh 🌟
+        </p>
+        <div id="achievementList">
+            <div style="text-align:center;padding:20px;color:var(--text-light);">
+                <i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:10px;"></i>
+                <p>Memuat data prestasi...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info-card">
+        <h4><i class="fas fa-star" style="color:gold;"></i> Cara Mendapat Prestasi</h4>
+        <p>• Selesaikan hafalan semua ayat dalam 1 surat</p>
+        <p>• Setoran akan dihitung otomatis oleh sistem</p>
+        <p>• Setiap surat yang selesai = 1 prestasi 🏆</p>
     </div>
 </div>
         <div class="tab-content" id="bimbinganTab">
@@ -532,6 +558,7 @@
         let recordingSeconds = 0;
         let riwayatData = [];
         let rekamanData = [];
+		let achievementsData = [];
 		// ============================================
 // DATA MUROTTAL JUZ 'AMMA
 // ============================================
@@ -866,15 +893,59 @@ document.addEventListener('DOMContentLoaded', () => {
         // TABS
         // ============================================
         function switchTab(t) {
+    console.log('🔀 Switch tab ke:', t);
+    
+    // Hapus active dari semua tab
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
-    event.target.closest('.tab').classList.add('active');
-    document.getElementById(t + 'Tab').classList.add('active');
     
-    if (t === 'riwayat') loadRiwayat();
-    if (t === 'statistik') updateStatistik();
-    if (t === 'bimbingan') loadRekaman();
-    if (t === 'murottal') renderMurottalList();
+    // Aktifkan tab yang diklik
+    if (event && event.target) {
+        event.target.closest('.tab').classList.add('active');
+    }
+    
+    // Aktifkan content
+    const tabContent = document.getElementById(t + 'Tab');
+    if (tabContent) {
+        tabContent.classList.add('active');
+        console.log('✅ Tab content ditemukan:', t + 'Tab');
+    } else {
+        console.error('❌ Tab content tidak ditemukan:', t + 'Tab');
+        return;
+    }
+    
+    // Panggil function sesuai tab
+    switch(t) {
+        case 'riwayat':
+            loadRiwayat();
+            break;
+        case 'statistik':
+            updateStatistik();
+            break;
+        case 'bimbingan':
+            loadRekaman();
+            break;
+        case 'murottal':
+            renderMurottalList();
+            break;
+        case 'prestasi':
+            console.log('🏆 Membuka tab Prestasi...');
+            console.log('📊 Data riwayat ada:', riwayatData?.length || 0);
+            
+            if (!riwayatData || riwayatData.length === 0) {
+                console.log('⏳ Load riwayat dulu...');
+                loadRiwayat().then(() => {
+                    console.log('✅ Riwayat loaded, render prestasi...');
+                    renderAchievementList();
+                }).catch(err => {
+                    console.error('❌ Error load riwayat:', err);
+                });
+            } else {
+                console.log('✅ Data ada, langsung render prestasi...');
+                renderAchievementList();
+            }
+            break;
+    }
 }
 
         // ============================================
@@ -945,7 +1016,178 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.predikat-item').forEach(x => x.classList.remove('selected'));
             selectedPredikat = null;
         }
-
+		// ============================================
+// PRESTASI / ACHIEVEMENTS
+// ============================================
+function calculateAchievements() {
+    console.log('🔍 Menghitung prestasi...');
+    console.log('📊 Data riwayat:', riwayatData?.length || 0, 'setoran');
+    
+    if (!riwayatData || riwayatData.length === 0) {
+        console.log('❌ Tidak ada data riwayat');
+        return [];
+    }
+    
+    const achievements = [];
+    const suratConfig = currentConfig.surat;
+    
+    // Kelompokkan setoran per siswa per surat
+    const setoranPerSiswa = {};
+    
+    riwayatData.forEach(setoran => {
+        const siswa = setoran.siswa;
+        const surat = setoran.surat;
+        
+        if (!setoranPerSiswa[siswa]) {
+            setoranPerSiswa[siswa] = {};
+        }
+        
+        if (!setoranPerSiswa[siswa][surat]) {
+            setoranPerSiswa[siswa][surat] = {
+                ayatSet: new Set(),
+                tanggal: setoran.tanggal
+            };
+        }
+        
+        // Tambahkan ayat yang disetorkan ke Set (otomatis unik)
+        const ayatDari = parseInt(setoran.ayatDari) || 1;
+        const ayatSampai = parseInt(setoran.ayatSampai) || 1;
+        
+        for (let i = ayatDari; i <= ayatSampai; i++) {
+            setoranPerSiswa[siswa][surat].ayatSet.add(i);
+        }
+        
+        // Simpan tanggal terakhir setoran
+        setoranPerSiswa[siswa][surat].tanggal = setoran.tanggal;
+    });
+    
+    console.log('📋 Setoran per siswa:', Object.keys(setoranPerSiswa).length, 'siswa');
+    
+    // Cek setiap siswa apakah sudah menyelesaikan surat tertentu
+    Object.keys(setoranPerSiswa).forEach(siswa => {
+        Object.keys(setoranPerSiswa[siswa]).forEach(namaSurat => {
+            // Cari total ayat surat ini dari config
+            const suratInfo = suratConfig.find(s => s.nama === namaSurat);
+            
+            if (suratInfo) {
+                const totalAyatSurat = suratInfo.ayat;
+                const ayatDihafal = setoranPerSiswa[siswa][namaSurat].ayatSet.size;
+                
+                console.log(`   ${siswa} - ${namaSurat}: ${ayatDihafal}/${totalAyatSurat} ayat`);
+                
+                // Jika sudah menghafal semua ayat dalam surat
+                if (ayatDihafal >= totalAyatSurat) {
+                    achievements.push({
+                        siswa: siswa,
+                        surat: namaSurat,
+                        totalAyat: totalAyatSurat,
+                        tanggal: setoranPerSiswa[siswa][namaSurat].tanggal
+                    });
+                    console.log(`   🏆 PRESTASI: ${siswa} menyelesaikan ${namaSurat}!`);
+                }
+            }
+        });
+    });
+    
+    // Sort berdasarkan nama siswa
+    achievements.sort((a, b) => a.siswa.localeCompare(b.siswa));
+    
+    console.log('✅ Total prestasi ditemukan:', achievements.length);
+    return achievements;
+}
+function renderAchievementList() {
+    console.log('========== RENDER ACHIEVEMENT ==========');
+    
+    const container = document.getElementById('achievementList');
+    
+    if (!container) {
+        console.error('❌ FATAL: Container #achievementList tidak ditemukan!');
+        console.log('Coba cari semua div:', document.querySelectorAll('div[id*="achievement"]'));
+        alert('Error: Container prestasi tidak ditemukan. Silakan refresh halaman.');
+        return;
+    }
+    
+    console.log('✅ Container ditemukan:', container);
+    
+    // Hitung ulang prestasi
+    achievementsData = calculateAchievements();
+    
+    console.log('📊 Jumlah prestasi:', achievementsData.length);
+    
+    if (!achievementsData || achievementsData.length === 0) {
+        container.innerHTML = `
+            <div style="text-align:center;padding:40px 20px;color:var(--text-light);">
+                <i class="fas fa-trophy" style="font-size:3rem;margin-bottom:15px;opacity:0.3;display:block;"></i>
+                <p style="font-size:1rem;margin-bottom:10px;">Belum ada siswa yang menyelesaikan hafalan 1 surat penuh.</p>
+                <p style="font-size:0.85rem;">Ayo semangat menghafal! 💪</p>
+            </div>
+        `;
+        console.log('📭 Tidak ada prestasi');
+        return;
+    }
+    
+    // Kelompokkan per siswa
+    const byStudent = {};
+    achievementsData.forEach(a => {
+        if (!byStudent[a.siswa]) {
+            byStudent[a.siswa] = [];
+        }
+        byStudent[a.siswa].push(a);
+    });
+    
+    const totalPrestasi = achievementsData.length;
+    const uniqueStudents = Object.keys(byStudent).length;
+    
+    console.log('👥 Siswa berprestasi:', uniqueStudents);
+    
+    // Build HTML
+    let html = `
+        <div style="background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a1a2e;padding:20px;border-radius:15px;margin-bottom:20px;text-align:center;box-shadow:0 5px 20px rgba(255,215,0,0.4);">
+            <div style="font-size:3.5rem;margin-bottom:10px;">🏆</div>
+            <div style="font-size:1.8rem;font-weight:bold;">${totalPrestasi} Prestasi</div>
+            <div style="font-size:0.95rem;margin-top:5px;opacity:0.8;">dari ${uniqueStudents} siswa berprestasi</div>
+        </div>
+    `;
+    
+    const medals = ['🥇', '🥈', '🥉', '🏅', '⭐', '🌟', '💫'];
+    let counter = 0;
+    
+    // Sort siswa
+    const sortedStudents = Object.keys(byStudent).sort();
+    
+    sortedStudents.forEach(siswa => {
+        const suratList = byStudent[siswa];
+        
+        suratList.forEach((achievement) => {
+            const medal = medals[Math.min(counter, medals.length - 1)];
+            counter++;
+            
+            const tanggalFormatted = typeof formatTanggal === 'function' 
+                ? formatTanggal(achievement.tanggal) 
+                : achievement.tanggal;
+            
+            html += `
+                <div style="background:linear-gradient(135deg,var(--accent,#FFD4B8),var(--bg-light,#FFF8F4));border-radius:12px;padding:15px;margin-bottom:12px;display:flex;align-items:center;gap:15px;border-left:5px solid gold;box-shadow:0 3px 10px rgba(0,0,0,0.08);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                    <div style="font-size:2.8rem;flex-shrink:0;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.2));">${medal}</div>
+                    <div style="flex:1;min-width:0;">
+                        <h4 style="color:var(--primary,#FF6B35);font-size:1.05rem;margin-bottom:4px;font-weight:bold;">${achievement.siswa}</h4>
+                        <p style="color:var(--text-dark,#2D2D2D);font-size:0.9rem;margin-bottom:3px;">✅ QS. ${achievement.surat} <span style="color:var(--text-light,#666);">(${achievement.totalAyat} ayat)</span></p>
+                        <p style="font-size:0.75rem;color:var(--text-light,#666);">📅 ${tanggalFormatted}</p>
+                    </div>
+                    <div style="color:#4CAF50;font-size:2rem;flex-shrink:0;"><i class="fas fa-check-circle"></i></div>
+                </div>
+            `;
+        });
+    });
+    
+    console.log('📝 HTML dibuat, panjang:', html.length, 'karakter');
+    
+    // Set HTML
+    container.innerHTML = html;
+    
+    console.log('✅ PRESTASI BERHASIL DI-RENDER!');
+    console.log('========================================');
+}
         // ============================================
         // REKAMAN
         // ============================================
@@ -1065,20 +1307,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // RIWAYAT
         // ============================================
         async function loadRiwayat() {
-            const btn = document.getElementById('btnRefresh');
-            btn.classList.add('spinning');
-            document.getElementById('riwayatList').innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Memuat...</p></div>';
-            try {
-                const r = await callAppsScript({ action: 'getData' });
-                riwayatData = r.data || [];
-                renderRiwayat();
-                updateStatistik();
-                document.getElementById('lastUpdate').innerHTML = '<i class="fas fa-clock"></i> ' + new Date().toLocaleString('id-ID');
-            } catch (err) {
-                document.getElementById('riwayatList').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Gagal memuat</p></div>';
-            }
-            btn.classList.remove('spinning');
-        }
+    const btn = document.getElementById('btnRefresh');
+    btn.classList.add('spinning');
+    document.getElementById('riwayatList').innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Memuat...</p></div>';
+    try {
+        const r = await callAppsScript({ action: 'getData' });
+        riwayatData = r.data || [];
+        renderRiwayat();
+        updateStatistik();
+        document.getElementById('lastUpdate').innerHTML = '<i class="fas fa-clock"></i> ' + new Date().toLocaleString('id-ID');
+        btn.classList.remove('spinning');
+        return riwayatData; // Tambahkan return
+    } catch (err) {
+        document.getElementById('riwayatList').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Gagal memuat</p></div>';
+        btn.classList.remove('spinning');
+        throw err; // Throw error agar catch di switchTab bisa menangkap
+    }
+}
 
         function renderRiwayat() {
     const c = document.getElementById('riwayatList');
@@ -1240,6 +1485,124 @@ function showToast(m, t = '') {
             document.getElementById('loading').classList.toggle('show', s);
             document.getElementById('loadingText').textContent = t;
         }
-    </script>
+    // OVERRIDE FUNGSI renderAchievementList DENGAN NAMA LENGKAP
+window.renderAchievementList = function() {
+    var container = document.getElementById('achievementList');
+    if (!container) return;
+    
+    // Hitung prestasi
+    var achievements = [];
+    var suratConfig = currentConfig.surat;
+    var setoranPerSiswa = {};
+    
+    for (var i = 0; i < riwayatData.length; i++) {
+        var s = riwayatData[i];
+        var siswa = s.siswa;
+        var surat = s.surat;
+        
+        if (!siswa || !surat) continue;
+        if (!setoranPerSiswa[siswa]) setoranPerSiswa[siswa] = {};
+        if (!setoranPerSiswa[siswa][surat]) setoranPerSiswa[siswa][surat] = { ayat: [], tanggal: s.tanggal };
+        
+        var dari = parseInt(s.ayatDari) || 1;
+        var sampai = parseInt(s.ayatSampai) || 1;
+        
+        for (var a = dari; a <= sampai; a++) {
+            if (setoranPerSiswa[siswa][surat].ayat.indexOf(a) === -1) {
+                setoranPerSiswa[siswa][surat].ayat.push(a);
+            }
+        }
+        setoranPerSiswa[siswa][surat].tanggal = s.tanggal;
+    }
+    
+    // Cek yang sudah selesai
+    var siswaList = Object.keys(setoranPerSiswa);
+    for (var i = 0; i < siswaList.length; i++) {
+        var siswa = siswaList[i];
+        var suratList = Object.keys(setoranPerSiswa[siswa]);
+        
+        for (var j = 0; j < suratList.length; j++) {
+            var namaSurat = suratList[j];
+            var suratInfo = null;
+            
+            for (var k = 0; k < suratConfig.length; k++) {
+                if (suratConfig[k].nama === namaSurat) {
+                    suratInfo = suratConfig[k];
+                    break;
+                }
+            }
+            
+            if (suratInfo && setoranPerSiswa[siswa][namaSurat].ayat.length >= suratInfo.ayat) {
+                achievements.push({
+                    siswa: siswa,
+                    surat: namaSurat,
+                    totalAyat: suratInfo.ayat,
+                    tanggal: setoranPerSiswa[siswa][namaSurat].tanggal
+                });
+            }
+        }
+    }
+    
+    // Jika tidak ada prestasi
+    if (achievements.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:40px;color:#666;">' +
+            '<div style="font-size:3rem;margin-bottom:15px;">🏆</div>' +
+            '<p>Belum ada siswa yang menyelesaikan hafalan 1 surat penuh.</p>' +
+            '<p style="font-size:0.85rem;">Ayo semangat menghafal! 💪</p></div>';
+        return;
+    }
+    
+    // Build HTML dengan UCAPAN SELAMAT
+    var medals = ['🥇', '🥈', '🥉', '🏅', '⭐', '🌟'];
+    var siswaUnique = [];
+    for (var x = 0; x < achievements.length; x++) {
+        if (siswaUnique.indexOf(achievements[x].siswa) === -1) siswaUnique.push(achievements[x].siswa);
+    }
+    
+    var html = '<div style="background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a1a2e;padding:20px;border-radius:15px;margin-bottom:20px;text-align:center;box-shadow:0 5px 20px rgba(255,215,0,0.4);">' +
+        '<div style="font-size:3rem;margin-bottom:8px;">🏆</div>' +
+        '<div style="font-size:1.6rem;font-weight:bold;">' + achievements.length + ' Prestasi</div>' +
+        '<div style="font-size:0.9rem;margin-top:5px;opacity:0.8;">dari ' + siswaUnique.length + ' siswa berprestasi</div></div>';
+    
+    for (var i = 0; i < achievements.length; i++) {
+        var a = achievements[i];
+        var medal = medals[i % medals.length];
+        var namaLengkap = a.siswa; // NAMA LENGKAP
+        var tgl = a.tanggal;
+        try { tgl = formatTanggal(a.tanggal); } catch(e) {}
+        
+        html += '<div style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-radius:15px;padding:18px;margin-bottom:15px;border-left:5px solid #F59E0B;box-shadow:0 4px 15px rgba(0,0,0,0.08);">' +
+            
+                     
+            // ========== UCAPAN SELAMAT DAN DOA DENGAN NAMA LENGKAP ==========
+            '<div style="background:linear-gradient(135deg,#DCFCE7,#BBF7D0);border-radius:12px;padding:18px;border:2px dashed #22C55E;text-align:center;">' +
+                '<div style="font-size:2rem;margin-bottom:10px;">🎉</div>' +
+                '<p style="font-size:1.1rem;color:#166534;font-weight:bold;margin:0 0 10px 0;">' +
+                    'Selamat Ananda ' + namaLengkap + '!' +
+                '</p>' +
+                '<p style="font-size:0.95rem;color:#166534;margin:0 0 12px 0;">' +
+                    'yang telah menyelesaikan hafalan <strong>Surah ' + a.surat + '</strong>' +
+                '</p>' +
+                '<div style="background:rgba(255,255,255,0.5);border-radius:8px;padding:12px;margin-top:10px;">' +
+                    '<p style="font-size:0.9rem;color:#15803D;font-style:italic;line-height:1.6;margin:0;">' +
+                        '"Teruslah semangat menghafal!<br>' +
+                        'Semoga Allah menjadikanmu ahli Al-Quran."' +
+                    '</p>' +
+                '</div>' +
+                '<p style="font-size:1rem;color:#166534;margin:15px 0 0 0;font-weight:bold;">' +
+                    '📚✨ Aamiin Yaa Rabbal Aalamiin ✨📚' +
+                '</p>' +
+            '</div>' +
+            
+        '</div>';
+    }
+    
+    container.innerHTML = html;
+};
+
+// JALANKAN LANGSUNG
+renderAchievementList();
+console.log('✅ Nama lengkap sudah ditampilkan!');
+	</script>
 </body>
 </html>
