@@ -178,216 +178,6 @@
 .kelas-tag.k4{background:#FFE4D6;color:#E55A2B}
 .kelas-tag.k5{background:#D6F5E0;color:#15803D}
 .kelas-tag.k6{background:#FEE2E2;color:#B91C1C}
-	/* ============================================
-   ACHIEVEMENT & FIREWORKS STYLES
-   ============================================ */
-
-/* Modal Overlay */
-.achievement-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-.achievement-modal.show {
-    display: flex;
-}
-
-/* Achievement Card */
-.achievement-card {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    border-radius: 20px;
-    padding: 30px;
-    text-align: center;
-    max-width: 350px;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    animation: achievementPop 0.5s ease-out;
-    border: 3px solid gold;
-    box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
-}
-@keyframes achievementPop {
-    0% { transform: scale(0.5); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-.achievement-card .trophy {
-    font-size: 4rem;
-    margin-bottom: 15px;
-    animation: trophyBounce 1s ease-in-out infinite;
-}
-@keyframes trophyBounce {
-    0%, 100% { transform: translateY(0) rotate(-5deg); }
-    50% { transform: translateY(-10px) rotate(5deg); }
-}
-
-.achievement-card h2 {
-    color: #FFD700;
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-.achievement-card .student-name {
-    color: #fff;
-    font-size: 1.3rem;
-    font-weight: bold;
-    margin: 15px 0;
-    padding: 10px;
-    background: rgba(255, 215, 0, 0.2);
-    border-radius: 10px;
-}
-
-.achievement-card .surat-name {
-    color: #4ade80;
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-}
-
-.achievement-card .congrats-text {
-    color: #a5b4fc;
-    font-size: 0.9rem;
-    line-height: 1.6;
-}
-
-.achievement-card .close-btn {
-    margin-top: 20px;
-    padding: 12px 30px;
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-    border: none;
-    border-radius: 25px;
-    color: #1a1a2e;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-.achievement-card .close-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
-}
-
-/* Fireworks Canvas */
-#fireworksCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 2001;
-}
-
-/* Achievement List in Tab */
-.achievement-item {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--bg-light) 100%);
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-left: 4px solid gold;
-    animation: slideIn 0.3s ease-out;
-}
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-.achievement-item .medal {
-    font-size: 2rem;
-    flex-shrink: 0;
-}
-
-.achievement-item .achievement-info {
-    flex: 1;
-}
-
-.achievement-item .achievement-info h4 {
-    color: var(--primary);
-    font-size: 0.95rem;
-    margin-bottom: 3px;
-}
-
-.achievement-item .achievement-info p {
-    color: var(--text-light);
-    font-size: 0.8rem;
-}
-
-.achievement-item .checkmark {
-    color: #4CAF50;
-    font-size: 1.5rem;
-}
-
-/* Stars decoration */
-.stars {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.star {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: gold;
-    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-    animation: starFloat 2s ease-in-out infinite;
-}
-
-@keyframes starFloat {
-    0%, 100% { opacity: 1; transform: translateY(0) rotate(0deg); }
-    50% { opacity: 0.5; transform: translateY(-20px) rotate(180deg); }
-}
-
-/* No achievement state */
-.no-achievement {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-light);
-}
-
-.no-achievement i {
-    font-size: 3rem;
-    margin-bottom: 15px;
-    opacity: 0.3;
-}
-
-.no-achievement p {
-    margin-bottom: 10px;
-}
-
-/* Tab badge for new achievements */
-.tab-badge {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: #FFD700;
-    color: #1a1a2e;
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-weight: bold;
-    animation: pulse 1s infinite;
-}
-
-.tab {
-    position: relative;
-}
 	</style>
 </head>
 <body>
@@ -453,10 +243,6 @@
         <div class="tabs">
     <div class="tab active" onclick="switchTab('setoran')"><i class="fas fa-book-quran"></i>Setor</div>
     <div class="tab" onclick="switchTab('murottal')"><i class="fas fa-headphones"></i>Murottal</div>
-    <div class="tab" onclick="switchTab('prestasi')" id="tabPrestasi">
-        <i class="fas fa-trophy"></i>Prestasi
-        <span class="tab-badge" id="prestasiBadge" style="display:none;">NEW</span>
-    </div>
     <div class="tab" onclick="switchTab('bimbingan')"><i class="fas fa-microphone"></i>Rekaman</div>
     <div class="tab" onclick="switchTab('riwayat')"><i class="fas fa-history"></i>Riwayat</div>
     <div class="tab" onclick="switchTab('statistik')"><i class="fas fa-chart-bar"></i>Statistik</div>
@@ -510,56 +296,6 @@
                 <audio id="audioPlayer" controls style="width:100%;margin-top:10px;border-radius:8px;"></audio>
             </div>
         </div>
-		<!-- Tab Content: Prestasi -->
-<div class="tab-content" id="prestasiTab">
-    <div class="card">
-        <div class="card-title"><i class="fas fa-trophy" style="color:gold;"></i> Daftar Prestasi Hafalan</div>
-        <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:15px;">
-            Siswa yang telah menyelesaikan hafalan 1 surat penuh 🌟
-        </p>
-        <div id="achievementList">
-            <div class="empty-state">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Memuat data prestasi...</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="info-card">
-        <h4><i class="fas fa-star" style="color:gold;"></i> Cara Mendapat Prestasi</h4>
-        <p>• Selesaikan hafalan semua ayat dalam 1 surat</p>
-        <p>• Setoran akan dihitung otomatis oleh sistem</p>
-        <p>• Setiap surat yang selesai = 1 prestasi 🏆</p>
-    </div>
-</div>
-
-<!-- Achievement Modal -->
-<div class="achievement-modal" id="achievementModal">
-    <div class="achievement-card">
-        <div class="stars">
-            <div class="star" style="top:10%;left:10%;animation-delay:0s;"></div>
-            <div class="star" style="top:20%;left:80%;animation-delay:0.3s;"></div>
-            <div class="star" style="top:60%;left:15%;animation-delay:0.6s;"></div>
-            <div class="star" style="top:70%;left:85%;animation-delay:0.9s;"></div>
-            <div class="star" style="top:40%;left:5%;animation-delay:1.2s;"></div>
-            <div class="star" style="top:30%;left:90%;animation-delay:1.5s;"></div>
-        </div>
-        <div class="trophy">🏆</div>
-        <h2>SELAMAT!</h2>
-        <div class="student-name" id="achievementStudent">-</div>
-        <div class="surat-name" id="achievementSurat">-</div>
-        <p class="congrats-text">
-            Luar biasa! Kamu telah berhasil menyelesaikan hafalan surat ini dengan sempurna. 
-            Teruslah semangat menghafal Al-Qur'an! 📖✨
-        </p>
-        <button class="close-btn" onclick="closeAchievementModal()">
-            <i class="fas fa-check"></i> Terima Kasih!
-        </button>
-    </div>
-</div>
-
-<!-- Fireworks Canvas -->
-<canvas id="fireworksCanvas"></canvas>
 
         <!-- Filter Kelas -->
         <div style="margin-bottom:15px;">
@@ -723,8 +459,8 @@
                 },
                 target: { kelas: 'Kelas 5', smt1: 'At-Thariq (86) - Al-Infithar (82)', smt2: 'At-Takwir (81) - An-Naba\' (78)' },
                 siswa: [
-                    "Abdul Basith", "Abdullah Asyfaq Nawawi", "Abid Aqilla Rajendra", "Afreza Dwi Saputra", "Anindita Keisha Azzahra",
-                    "Friska Dila Aulia", "Jemmy Rachad Nazzih", "Kinara Syaqila Anggraini", 
+                    "Abdullah Asyfaq Nawawi", "Abid Aqilla Rajendra", "Afreza Dwi Saputra", "Anindita Keisha Azzahra",
+                    "Friska Dila Aulia", "Jemmy Rachad Nazzih", "Kinara Syaqila Anggraini", "Mirza Muhammad Afiq El Fath",
                     "Moh Fauzus Salam", "Muhammad Azka Alvaro", "Muhammad Erlangga", "Muhammad Zidna Ilman",
                     "Muhammad Zulfan Alfatir", "Nahwa Kamilatun Nisa", "Nilam Ainur Rohmah", "Nindia Ramadhani Safitri",
                     "Nurin Najwa", "Rafa Aditya Putra", "Talita Indah Ayu Septiana", "Wildan Faza Aufar", "Zalfa Rahmuna Yasmin"
@@ -964,306 +700,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
         // ============================================
-// ACHIEVEMENT SYSTEM
-// ============================================
-
-let achievementsData = [];
-let shownAchievements = JSON.parse(localStorage.getItem('shown_achievements_' + (currentKelas || '')) || '[]');
-
-// Hitung pencapaian dari data riwayat
-function calculateAchievements() {
-    if (!currentConfig || !riwayatData.length) return [];
-    
-    const achievements = [];
-    const suratTargets = {};
-    
-    // Buat map target ayat per surat
-    currentConfig.surat.forEach(s => {
-        suratTargets[s.nama] = {
-            totalAyat: s.ayat,
-            nomor: s.nomor
-        };
-    });
-    
-    // Kelompokkan setoran per siswa per surat
-    const studentProgress = {};
-    
-    riwayatData.forEach(item => {
-        const key = `${item.siswa}_${item.surat}`;
-        if (!studentProgress[key]) {
-            studentProgress[key] = {
-                siswa: item.siswa,
-                surat: item.surat,
-                ayatSet: new Set(),
-                tanggalSelesai: item.tanggal
-            };
-        }
-        
-        // Tambahkan ayat yang sudah disetor
-        const dari = parseInt(item.ayatDari);
-        const sampai = parseInt(item.ayatSampai);
-        for (let i = dari; i <= sampai; i++) {
-            studentProgress[key].ayatSet.add(i);
-        }
-        
-        // Update tanggal terakhir
-        studentProgress[key].tanggalSelesai = item.tanggal;
-    });
-    
-    // Cek mana yang sudah selesai
-    Object.values(studentProgress).forEach(progress => {
-        const target = suratTargets[progress.surat];
-        if (target && progress.ayatSet.size >= target.totalAyat) {
-            achievements.push({
-                siswa: progress.siswa,
-                surat: progress.surat,
-                nomorSurat: target.nomor,
-                totalAyat: target.totalAyat,
-                tanggal: progress.tanggalSelesai,
-                id: `${progress.siswa}_${progress.surat}`
-            });
-        }
-    });
-    
-    // Sort by tanggal (terbaru dulu)
-    achievements.sort((a, b) => {
-        return new Date(b.tanggal) - new Date(a.tanggal);
-    });
-    
-    return achievements;
-}
-
-// Render daftar prestasi
-function renderAchievementList() {
-    const container = document.getElementById('achievementList');
-    if (!container) return;
-    
-    achievementsData = calculateAchievements();
-    
-    if (!achievementsData.length) {
-        container.innerHTML = `
-            <div class="no-achievement">
-                <i class="fas fa-trophy"></i>
-                <p>Belum ada siswa yang menyelesaikan hafalan 1 surat penuh.</p>
-                <p style="font-size:0.8rem;">Ayo semangat menghafal! 💪</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // Kelompokkan per siswa
-    const byStudent = {};
-    achievementsData.forEach(a => {
-        if (!byStudent[a.siswa]) {
-            byStudent[a.siswa] = [];
-        }
-        byStudent[a.siswa].push(a);
-    });
-    
-    let html = '';
-    
-    Object.keys(byStudent).sort().forEach(siswa => {
-        const suratList = byStudent[siswa];
-        const medals = ['🥇', '🥈', '🥉', '🏅', '⭐'];
-        
-        suratList.forEach((achievement, idx) => {
-            const medal = medals[Math.min(idx, medals.length - 1)];
-            html += `
-                <div class="achievement-item">
-                    <div class="medal">${medal}</div>
-                    <div class="achievement-info">
-                        <h4>${achievement.siswa}</h4>
-                        <p>✅ QS. ${achievement.surat} (${achievement.totalAyat} ayat)</p>
-                        <p style="font-size:0.7rem;">${formatTanggal(achievement.tanggal)}</p>
-                    </div>
-                    <div class="checkmark"><i class="fas fa-check-circle"></i></div>
-                </div>
-            `;
-        });
-    });
-    
-    // Tambah summary
-    const totalPrestasi = achievementsData.length;
-    const uniqueStudents = Object.keys(byStudent).length;
-    
-    html = `
-        <div style="background:linear-gradient(135deg,gold,orange);color:#1a1a2e;padding:15px;border-radius:12px;margin-bottom:15px;text-align:center;">
-            <div style="font-size:2rem;">🏆</div>
-            <div style="font-size:1.2rem;font-weight:bold;">${totalPrestasi} Prestasi</div>
-            <div style="font-size:0.85rem;">dari ${uniqueStudents} siswa berprestasi</div>
-        </div>
-    ` + html;
-    
-    container.innerHTML = html;
-}
-
-// Cek achievement baru saat login
-function checkNewAchievements() {
-    if (currentUser !== 'Murid') return;
-    
-    achievementsData = calculateAchievements();
-    shownAchievements = JSON.parse(localStorage.getItem('shown_achievements_' + currentKelas) || '[]');
-    
-    // Cari achievement yang belum ditampilkan
-    const newAchievements = achievementsData.filter(a => !shownAchievements.includes(a.id));
-    
-    if (newAchievements.length > 0) {
-        // Tampilkan badge
-        const badge = document.getElementById('prestasiBadge');
-        if (badge) {
-            badge.style.display = 'inline';
-            badge.textContent = newAchievements.length;
-        }
-        
-        // Tampilkan achievement pertama yang baru
-        setTimeout(() => {
-            showAchievementModal(newAchievements[0]);
-        }, 1000);
-    }
-}
-
-// Tampilkan modal achievement
-function showAchievementModal(achievement) {
-    const modal = document.getElementById('achievementModal');
-    const studentEl = document.getElementById('achievementStudent');
-    const suratEl = document.getElementById('achievementSurat');
-    
-    studentEl.textContent = achievement.siswa;
-    suratEl.innerHTML = `Telah menyelesaikan hafalan<br><strong>QS. ${achievement.surat}</strong><br>(${achievement.totalAyat} ayat)`;
-    
-    modal.classList.add('show');
-    
-    // Jalankan kembang api
-    startFireworks();
-    
-    // Tandai sebagai sudah ditampilkan
-    if (!shownAchievements.includes(achievement.id)) {
-        shownAchievements.push(achievement.id);
-        localStorage.setItem('shown_achievements_' + currentKelas, JSON.stringify(shownAchievements));
-    }
-}
-
-// Tutup modal
-function closeAchievementModal() {
-    const modal = document.getElementById('achievementModal');
-    modal.classList.remove('show');
-    stopFireworks();
-    
-    // Sembunyikan badge jika semua sudah dilihat
-    const newAchievements = achievementsData.filter(a => !shownAchievements.includes(a.id));
-    if (newAchievements.length === 0) {
-        const badge = document.getElementById('prestasiBadge');
-        if (badge) badge.style.display = 'none';
-    }
-}
-
-// ============================================
-// FIREWORKS ANIMATION
-// ============================================
-
-let fireworksAnimation = null;
-let particles = [];
-
-function startFireworks() {
-    const canvas = document.getElementById('fireworksCanvas');
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    particles = [];
-    
-    // Create fireworks
-    function createFirework() {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height * 0.5;
-        const colors = ['#FFD700', '#FF6B35', '#4CAF50', '#2196F3', '#E91E63', '#9C27B0', '#00BCD4'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        
-        for (let i = 0; i < 50; i++) {
-            const angle = (Math.PI * 2 / 50) * i;
-            const velocity = 2 + Math.random() * 3;
-            particles.push({
-                x: x,
-                y: y,
-                vx: Math.cos(angle) * velocity,
-                vy: Math.sin(angle) * velocity,
-                life: 100,
-                color: color,
-                size: 2 + Math.random() * 2
-            });
-        }
-    }
-    
-    // Animation loop
-    function animate() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        particles.forEach((p, index) => {
-            p.x += p.vx;
-            p.y += p.vy;
-            p.vy += 0.05; // gravity
-            p.life -= 1;
-            
-            if (p.life <= 0) {
-                particles.splice(index, 1);
-                return;
-            }
-            
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = p.color;
-            ctx.globalAlpha = p.life / 100;
-            ctx.fill();
-            ctx.globalAlpha = 1;
-        });
-        
-        fireworksAnimation = requestAnimationFrame(animate);
-    }
-    
-    // Create fireworks periodically
-    const fireworkInterval = setInterval(() => {
-        if (!document.getElementById('achievementModal').classList.contains('show')) {
-            clearInterval(fireworkInterval);
-            return;
-        }
-        createFirework();
-    }, 300);
-    
-    // Initial fireworks
-    for (let i = 0; i < 5; i++) {
-        setTimeout(createFirework, i * 200);
-    }
-    
-    animate();
-}
-
-function stopFireworks() {
-    if (fireworksAnimation) {
-        cancelAnimationFrame(fireworksAnimation);
-        fireworksAnimation = null;
-    }
-    
-    const canvas = document.getElementById('fireworksCanvas');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    
-    particles = [];
-}
-
-// Resize handler
-window.addEventListener('resize', () => {
-    const canvas = document.getElementById('fireworksCanvas');
-    if (canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-});
-		// ============================================
         // INIT
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
@@ -1429,7 +865,7 @@ window.addEventListener('resize', () => {
         // ============================================
         // TABS
         // ============================================
-       function switchTab(t) {
+        function switchTab(t) {
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
     event.target.closest('.tab').classList.add('active');
@@ -1439,7 +875,6 @@ window.addEventListener('resize', () => {
     if (t === 'statistik') updateStatistik();
     if (t === 'bimbingan') loadRekaman();
     if (t === 'murottal') renderMurottalList();
-    if (t === 'prestasi') renderAchievementList();
 }
 
         // ============================================
@@ -1630,24 +1065,20 @@ window.addEventListener('resize', () => {
         // RIWAYAT
         // ============================================
         async function loadRiwayat() {
-    const btn = document.getElementById('btnRefresh');
-    btn.classList.add('spinning');
-    document.getElementById('riwayatList').innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Memuat...</p></div>';
-    try {
-        const r = await callAppsScript({ action: 'getData' });
-        riwayatData = r.data || [];
-        renderRiwayat();
-        updateStatistik();
-        document.getElementById('lastUpdate').innerHTML = '<i class="fas fa-clock"></i> ' + formatTanggal(new Date().toLocaleDateString('id-ID'));
-        
-        // Cek achievement baru
-        checkNewAchievements();
-        
-    } catch (err) {
-        document.getElementById('riwayatList').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Gagal memuat</p></div>';
-    }
-    btn.classList.remove('spinning');
-}
+            const btn = document.getElementById('btnRefresh');
+            btn.classList.add('spinning');
+            document.getElementById('riwayatList').innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Memuat...</p></div>';
+            try {
+                const r = await callAppsScript({ action: 'getData' });
+                riwayatData = r.data || [];
+                renderRiwayat();
+                updateStatistik();
+                document.getElementById('lastUpdate').innerHTML = '<i class="fas fa-clock"></i> ' + new Date().toLocaleString('id-ID');
+            } catch (err) {
+                document.getElementById('riwayatList').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Gagal memuat</p></div>';
+            }
+            btn.classList.remove('spinning');
+        }
 
         function renderRiwayat() {
     const c = document.getElementById('riwayatList');
